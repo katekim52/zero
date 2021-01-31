@@ -586,6 +586,7 @@ int return_vector_xbase(vector<int> x)
 }
 
 cv::Point2i get_goal_point(cv::Mat lane_mask, int size)
+///lane._mask에서 0행에서 픽셀 값이 0인 지점들의 평균값을 goal point로 반환
 {
     int count = 0;
     double sum = 0;
