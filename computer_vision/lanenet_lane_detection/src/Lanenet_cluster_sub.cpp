@@ -267,10 +267,10 @@ class LanenetCluster{
 
             pcl::search::KdTree<pcl::PointXYZ>::Ptr left_tree (new pcl::search::KdTree<pcl::PointXYZ>);
             pcl::search::KdTree<pcl::PointXYZ>::Ptr right_tree (new pcl::search::KdTree<pcl::PointXYZ>);
-
+            
             left_tree->setInputCloud(cloud_left);
             right_tree->setInputCloud(cloud_right);
-
+            //lidar에서 받은 point들로 kdtree 
             std::vector<pcl::PointIndices> left_cluster_indices;
             std::vector<pcl::PointIndices> right_cluster_indices;
 
@@ -281,7 +281,8 @@ class LanenetCluster{
             ec.setSearchMethod(left_tree);
             ec.setInputCloud(cloud_left);
             ec.extract(left_cluster_indices);
-
+            //euclidean 거리에 따라 grouping
+            
             int count = 1;
             vector<vector<int>> cluster_indices;
             vector<vector<vector<int>>> all_indices;
@@ -319,7 +320,7 @@ class LanenetCluster{
             cluster_indices.clear();
             all_indices.clear();
 
-            for(std::vector<pcl::PointIndices>::const_iterator it = right_cluster_indices.begin();it != right_cluster_indices.end();++it){
+            for(std::vector<pcl::PointIndices>::const_iterator it = right_cluster_indices.begin(); it != right_cluster_indices.end();++it){
                 for(std::vector<int>::const_iterator pit = it->indices.begin(); pit != it->indices.end(); ++pit){
                     vector<int> one_indice;
                     one_indice.push_back(right_seg_y[*pit]);
@@ -343,6 +344,8 @@ class LanenetCluster{
             double coeff_right[4] = {0, 0, 0, 0};
             getcoeff(all_indices[right_lane], coeff_right);
 
+            //left right에서 lidar로 받은 point cloud를 grouping하는 부분 같다. 
+            
             cv::Mat costMap = cv::Mat::zeros(267, 200, CV_8UC1);
 
             
