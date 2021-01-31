@@ -70,6 +70,8 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
     //    std::cout<<"white"<<std::endl;
     }
 
+	///왼쪽 절반에 어떤 색깔이 더 많은지에 따라 left_lane 값 지정
+
     int window_x_min, window_x_max;
     int window_y_min, window_y_max;
     int window_x_size, window_y_size;
