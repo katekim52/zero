@@ -71,6 +71,7 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
     }
 
 	///왼쪽 절반에 어떤 색깔이 더 많은지에 따라 left_lane 값 지정
+	///left_xbase: left_lane 색의 histogram 평균값
 
     int window_x_min, window_x_max;
     int window_y_min, window_y_max;
@@ -130,6 +131,9 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
                 }
             }
         }
+	///temp_x: 윈도우안에서 left_lane 색과 픽셀 색이 같은 점의 x좌표들
+	    
+	    
         if(temp_x.size() != 0)
         {
             left_xbase = return_vector_xbase(temp_x);
