@@ -18,6 +18,8 @@ video_left = 8
 video_right = 4
 weight_path = "/home/snuzero/catkin_ws/src/zero/computer_vision/lanenet_lane_detection/ldln_ckpt_7.pth"
 
+#lane net 결과(embedding, binary segmentation)을 publish
+
 if __name__ == "__main__":
     
     USE_CUDA = torch.cuda.is_available()
