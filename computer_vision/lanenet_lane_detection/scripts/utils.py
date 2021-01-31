@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import MeanShift, KMeans
 
+#mean shift clustering
 def embedding_post_processing(embedding, bin_seg, band_width = 1.5, max_num_lane = 5):
     
     cluster_result = np.zeros(bin_seg.shape, dtype = np.int32)
@@ -21,5 +22,5 @@ def embedding_post_processing(embedding, bin_seg, band_width = 1.5, max_num_lane
     for idx in np.unique(cluster_result):
         if len(cluster_result[cluster_result==idx]) < 15:
             cluster_result[cluster_result==idx] = 0
-
+           #너무 크기가 작은 cluster는 제외
     return cluster_result
