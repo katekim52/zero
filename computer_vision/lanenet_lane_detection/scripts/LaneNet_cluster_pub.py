@@ -28,7 +28,7 @@ if __name__ == "__main__":
     model.eval()
 
     seg_pub = rospy.Publisher('/lane_cluster_topic', numpy_msg(lanenet_clus_msg), queue_size = 10)
-
+    # float32[] segmentation points
     rospy.init_node('lanenet_cluster_publisher', anonymous = True)
     #rate = rospy.Rate(100)
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         print("Left video is not opened!")
     if not cap_right.isOpened():
         print("Right video is not opened!")
-
+    # FIXME dangling if
     else:
         while not rospy.is_shutdown():
             ret_left, img_left = cap_left.read()
@@ -51,16 +51,16 @@ if __name__ == "__main__":
                 img_left = cv2.cvtColor(img_left, cv2.COLOR_BGR2RGB)
                 img_right = cv2.cvtColor(img_right, cv2.COLOR_BGR2RGB)
                 
-                img_left = cv2.resize(img_left, (640, 480))
+                img_left = cv2.resize(img_left, (640, 480)) # shape: (640, 480, 3) w/ uint8 0 to 255
                 img_right = cv2.resize(img_right, (640, 480))
                
-                img_input_left = transforms.ToTensor()(img_left)
+                img_input_left = transforms.ToTensor()(img_left) # shape: (3, 640, 480) w/ float 0 to 1
                 img_input_right = transforms.ToTensor()(img_right)
 
                 img_input = torch.stack([img_input_left, img_input_right], dim = 0).to(DEVICE)
-
+                # shape: (2, 3, 640, 480)
                 output = model(img_input)
-
+                # FIXME duplicate code. see ./LaneNet_publisher_node.py
                 lanenet_msg_pub = lanenet_clus_msg()
 
                 pix_embedding = output['pix_embedding']
@@ -90,7 +90,7 @@ if __name__ == "__main__":
                 #seg_msg = UInt16MultiArray()
                 #seg_msg.data = seg_img
 
-                seg_pub.publish(np.append(lanenet_msg_pub, pix_embedding_pub))
+                seg_pub.publish(np.append(lanenet_msg_pub, pix_embedding_pub)) # 1d float32 array
                 #rate.sleep()
                 #cv2.imshow("left_seg", left_seg_img)
                 #cv2.imshow("right_seg", right_seg_img)
