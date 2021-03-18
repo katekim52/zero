@@ -26,7 +26,7 @@ if __name__ == "__main__":
     model.eval()
 
     seg_pub = rospy.Publisher('/lane_seg_topic', numpy_msg(lanenet_msg), queue_size = 10)
-
+    # float32[] segmentation points
     rospy.init_node('lanenet_seg_publisher', anonymous = True)
     #rate = rospy.Rate(100)
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         print("Left video is not opened!")
     if not cap_right.isOpened():
         print("Right video is not opened!")
-
+    # FIXME dangling if
     else:
         while not rospy.is_shutdown():
             ret_left, img_left = cap_left.read()
@@ -49,14 +49,14 @@ if __name__ == "__main__":
                 img_left = cv2.cvtColor(img_left, cv2.COLOR_BGR2RGB)
                 img_right = cv2.cvtColor(img_right, cv2.COLOR_BGR2RGB)
                 
-                img_left = cv2.resize(img_left, (640, 480))
+                img_left = cv2.resize(img_left, (640, 480)) # shape: (640, 480, 3) w/ uint8 0 to 255
                 img_right = cv2.resize(img_right, (640, 480))
                
-                img_input_left = transforms.ToTensor()(img_left)
+                img_input_left = transforms.ToTensor()(img_left) # shape: (3, 640, 480) w/ float 0 to 1
                 img_input_right = transforms.ToTensor()(img_right)
 
                 img_input = torch.stack([img_input_left, img_input_right], dim = 0).to(DEVICE)
-
+                # shape: (2, 3, 640, 480)
                 output = model(img_input)
 
                 lanenet_msg_pub = lanenet_msg()
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 
                 binary_seg = output['binary_seg']
                 binary_seg_prob = binary_seg.detach().cpu().numpy()
-                lanenet_msg_pub = binary_seg_prob.flatten()
+                lanenet_msg_pub = binary_seg_prob.flatten() # 1d float32 array
                 
                 #binary_left_seg_pred = np.argmax(binary_seg_prob, axis = 1)[0]
                 #binary_right_seg_pred = np.argmax(binary_seg_prob, axis = 1)[1]
