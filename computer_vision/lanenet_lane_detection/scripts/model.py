@@ -335,6 +335,10 @@ class LaneNet(nn.Module):
         }
     
     def discriminative_loss(self, embedding, seg_gt):
+        # embedding : embedding of lane pixels (each channel contains coordinates of each pixel in embedding space
+        # [N, 2, H, W] (embedded to R^2)
+        # seg_gt : ground truth of each lane instances
+        # [N, H, W] (each pixel contain the instance id of its position)
         batch_size = embedding.shape[0]
         
         var_loss = torch.tensor(0, dtype = embedding.dtype, device = embedding.device)
@@ -342,9 +346,9 @@ class LaneNet(nn.Module):
         reg_loss = torch.tensor(0, dtype = embedding.dtype, device = embedding.device)
 
         for b in range(batch_size):
-            embedding_b = embedding[b]
+            embedding_b = embedding[b] # [2, H, W]
             seg_gt_b = seg_gt[b]
-            seg_gt_b = seg_gt_b.squeeze(0)
+            seg_gt_b = seg_gt_b.squeeze(0) # [H, W]
 
             labels = torch.unique(seg_gt_b)
             labels = labels[labels!=0]
