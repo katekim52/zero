@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		std::cerr << "Camera 3 open failed!!"<<std::endl;
 		return -1;
 	}
-
+//camera open
 	cv::Mat frame1, frame2, frame3;
 
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 		std::cout<<"No calibration txt file"<<std::endl;
 		return -1;
 	}
-
+//calibration setting (3D->2D)
 	//////////////////////////////////////////////////////////////////
 	
 	while (nh.ok()) 
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 		//std::cout<<"1"<<std::endl;
 		cv::Mat perspective_img;
 		perspective_img = birdeye(img_cal_1, img_cal_2, img_cal_3);
-
+//bird eye view img get
 		cv::namedWindow("perspective_img");
 		cv::imshow("perspective_img",perspective_img);
 		
@@ -130,17 +130,17 @@ int main(int argc, char **argv)
 		gray = get_binary_from_equalized_grayscale(perspective_img);
 	//	cv::namedWindow("gray_img");
 	//	cv::imshow("gray_img", gray);	
-
+//yellow, gray, grad(변화율) mask get
 		//std::cout<<"1"<<std::endl;
 		cv::Mat lane_mask;
 		lane_mask = get_lane_mask(yellow, grad, gray);
 	//	cv::namedWindow("lane_mask");
 	//	cv::imshow("lane_mask", lane_mask);
-
+//yellow, gray,grad mask 조합해서 전체적인 lane_mask get
 		//std::cout<<"1"<<std::endl;
 		cv::Mat fitting_mask;
 		fitting_mask = get_fits_by_sliding_window(lane_mask, 10);
-		//cost map을 get
+//cost map을 get
 		cv::namedWindow("fitting_mask");
 		cv::imshow("fitting_mask", fitting_mask);
 
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		cv::Point2i goal_point;
     	goal_point = get_goal_point(fitting_mask, lane_mask.cols);
     	std::cout<<goal_point<<std::endl;
-
+//1열에 있는 검은 픽셀 점 중 무게 중심을 goal point로 get
 		nav_msgs::OccupancyGrid cost_map;
 		cost_map = nav_msgs::OccupancyGrid();
 
