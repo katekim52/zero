@@ -141,6 +141,7 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
             window_y_min = img_size - (iter+1)*window_y_size;
             window_y_max = img_size - (iter)*window_y_size;
         }
+	  //흰색으로 마킹된 차선이 포함되어있다면 그 무게중심을 세로운 위치로 두고 다음 차선 위치 검출
         else
         {
             window_x_num = 5;
@@ -149,6 +150,7 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
             window_y_min = img_size - (iter+1)*window_y_size;
             window_y_max = img_size - (iter)*window_y_size;
         }
+	    //포함되어 있지 않다면 window 개수를 5개로 늘려 무게 중심 계산
         
         temp_x.clear();
     ///////////////////////////////////////////////////////
@@ -229,6 +231,8 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
             //left_temp_img = left_img.clone();
             //cv::waitKey();
         }
+	    
+	    //각 window 개수 (3개 or 5개)에 따라 window 별 검출
 
         window_x_num = 3;
     }
@@ -236,6 +240,7 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
     left_lane.get_coeff();
     //left_lane.half_lane_print(img_size, 0); // 0: left , 1: right
 
+	//3차원 fitting된 coefficient get
     //right_img
 
     int *white_right_hist = new int[half_size];
@@ -268,6 +273,8 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
         }
     }
 
+	
+	//오른쪽 카메라에 대해 
     int right_xbase;
 
     if(hist_sum(yellow_right_hist, half_size)>hist_sum(white_right_hist, half_size))
@@ -431,6 +438,8 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
     right_lane.get_coeff();
     //right_lane.half_lane_print(img_size, 1); // 0: left , 1: right
     
+	
+
     cv::Mat return_img = cv::Mat::zeros(img_size, img_size, CV_8UC1);
     int pivot_left, pivot_right;
     for(int i=0; i<img_size ;i++)
@@ -492,6 +501,8 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
             }
         }
 
+		
+	//costmap 그리기. 1,5번 열>255, 24번 열>100, 3번열 0
         int pivot_1, pivot_2, pivot_3, pivot_4;
         pivot_1 = ((pivot_left)*4 + (pivot_right + half_size)*1)/5;
         pivot_2 = ((pivot_left)*3 + (pivot_right + half_size)*2)/5;
