@@ -551,7 +551,7 @@ cv::Mat get_fits_by_sliding_window(cv::Mat img, int n_window = 10)
     delete []yellow_left_hist;
     delete []white_right_hist;
     delete []yellow_right_hist;
-
+//cost map image를 return
     return return_img;
 }
 
