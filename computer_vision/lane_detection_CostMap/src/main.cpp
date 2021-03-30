@@ -140,6 +140,7 @@ int main(int argc, char **argv)
 		//std::cout<<"1"<<std::endl;
 		cv::Mat fitting_mask;
 		fitting_mask = get_fits_by_sliding_window(lane_mask, 10);
+		//cost map을 get
 		cv::namedWindow("fitting_mask");
 		cv::imshow("fitting_mask", fitting_mask);
 
